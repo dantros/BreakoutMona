@@ -23,3 +23,12 @@ target_include_directories(BreakoutMona  PRIVATE
 add_custom_command(TARGET BreakoutMona POST_BUILD        
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different 
         $<TARGET_FILE:OpenAL> $<TARGET_FILE_DIR:BreakoutMona>)
+
+# Setting up the configuration file to use the asset directories from the source code, this is only for development.
+set(APPLICATION_ASSETS_DIR ${CMAKE_SOURCE_DIR}/assets)
+set(ENGINE_ASSETS_DIR ${CMAKE_SOURCE_DIR}/MonaEngine/EngineAssets)
+configure_file(${CMAKE_SOURCE_DIR}/MonaEngine/config.cfg.in config.cfg)
+
+add_custom_command(TARGET BreakoutMona POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+        config.cfg $<TARGET_FILE_DIR:BreakoutMona>)
