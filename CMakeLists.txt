@@ -25,10 +25,30 @@ add_custom_command(TARGET BreakoutMona POST_BUILD
         $<TARGET_FILE:OpenAL> $<TARGET_FILE_DIR:BreakoutMona>)
 
 # Setting up the configuration file to use the asset directories from the source code, this is only for development.
-set(APPLICATION_ASSETS_DIR ${CMAKE_SOURCE_DIR}/assets)
+set(APPLICATION_ASSETS_DIR ${CMAKE_SOURCE_DIR}/Assets)
 set(ENGINE_ASSETS_DIR ${CMAKE_SOURCE_DIR}/MonaEngine/EngineAssets)
 configure_file(${CMAKE_SOURCE_DIR}/MonaEngine/config.cfg.in config.cfg)
 
 add_custom_command(TARGET BreakoutMona POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-        config.cfg $<TARGET_FILE_DIR:BreakoutMona>)
+        config.cfg $<TARGET_FILE_DIR:BreakoutMona>
+)
+
+# Proceso de instalación
+include(GNUInstallDirs)
+install(TARGETS BreakoutMona
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        COMPONENT BreakoutMona_Runtime
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        COMPONENT BreakoutMona_Include
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        COMPONENT BreakoutMona_Runtime
+        NAMELINK_COMPONENT BreakoutMona_Development
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        COMPONENT BreakoutMona_Development
+)
+
+install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
